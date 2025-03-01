@@ -1,0 +1,33 @@
+{
+  "name": "broker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "queue": "npx ts-node ./src/stream.ts",
+    "main": "npx ts-node ./src/main.ts",
+    "test": "npx ts-node ./tests/*.ts",
+    "clean": "rm -rf dist",
+    "compile": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "async": "^3.2.6",
+    "dotenv": "^16.4.7",
+    "ioredis": "^5.5.0",
+    "minimist": "^1.2.8",
+    "mqtt": "^5.10.4",
+    "pino": "^9.6.0",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/async": "^3.2.24",
+    "@types/minimist": "^1.2.5",
+    "@types/mqtt": "^0.0.34",
+    "@types/node": "^22.13.5",
+    "@types/pino": "^7.0.4",
+    "typescript": "^5.1.6"
+  }
+}
