@@ -58,6 +58,8 @@ async function main(){
         dataList = JSON.parse(dataList)
         
         await client.call("XACK", STREAM_KEY, GROUP, id);
+        console.log(dataList)
+
     }, (err)=>{{
         throw err;
     }})
