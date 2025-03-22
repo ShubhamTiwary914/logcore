@@ -45,7 +45,6 @@ mqttClient.on("connect", () => {
 mqttClient.on("message", async (topic: string, msg: Buffer)=>{
     //only sibscribed to queue --> only receive from queue.
     assert(topic === QUEUE_TOPIC)
-    //console.log(msg.byteLength)
     try{
         await redisClient.xadd(STREAM, '*', 'data', msg)
     }
