@@ -1,1 +1,0 @@
-seq 2000 | xargs -I{} -P 50 bash -c './script.sh'

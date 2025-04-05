@@ -1,0 +1,37 @@
+version: '3'
+
+
+# docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
+# docker run -d --name redisinsight -p 5540:5540 redis/redisinsight:latest
+# docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+# docker run -d --name timescaledb -p 5432:5432 -e POSTGRES_PASSWORD=password timescale/timescaledb-ha:pg17
+
+
+services:
+    rabbit:
+        image: rabbitmq:latest
+        container_name: rabbitmq-test
+        restart: always
+        ports:
+          - 5672:5672
+          - 15672:15672
+    redis:
+      image: redis
+      container_name: redis-test
+      restart: always
+      ports:
+        - 6379:6379 
+
+    redisinsight:
+      image: redis/redisinsight
+      container_name: redisinsight
+      ports:
+        - 5540:5540
+
+    timescaledb:
+      image: timescale/timescaledb-ha:pg17
+      container_name: timescaledb-test
+      ports:
+        - 5432:5432
+      environment:
+        - POSTGRES_PASSWORD=password

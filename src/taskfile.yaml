@@ -1,0 +1,63 @@
+version: '3'
+
+tasks: 
+  #broker node 
+  broker-install:
+    desc: Install packages in node with types
+    dir: ./broker
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install --save-dev @types/{{.CLI_ARGS}}
+  broker-compile:
+    desc: build typescipt codes (update from previous, not rebuild)
+    dir: ./broker
+    cmds: 
+      - tsc --skipLibCheck
+  broker-rebuild:
+    desc: remove old build & rebuild
+    dir: ./broker
+    cmds:
+      - rm -rf ./dist
+      - task compile
+
+  broker-main:
+    desc: compile + run main file
+    dir: ./broker
+    deps: [broker-compile]
+    cmds: 
+      - node ./dist/main.js
+
+  broker-test:
+    desc: compile + run test, cliargs =  (topic, messages, intervals, intervalMs)
+    dir: ./broker
+    deps: [broker-compile]
+    cmds:
+      - node ./dist/producer.js {{.CLI_ARGS}}
+
+
+  #worker node
+  worker-install:
+    desc: Install packages in node with types
+    dir: ./worker
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install --save-dev @types/{{.CLI_ARGS}}
+  worker-compile:
+    desc: build typescipt codes (update from previous, not rebuild)
+    dir: ./worker
+    cmds: 
+      - tsc --skipLibCheck
+  worker-rebuild:
+    desc: remove old build & rebuild
+    dir: ./worker
+    cmds:
+      - rm -rf ./dist
+      - task compile
+
+  worker-main:
+    desc: compile + run main file, cliargs = (topic)
+    dir: ./worker
+    deps: [worker-compile]
+    cmds: 
+      - node ./dist/main.js {{.CLI_ARGS}}
+

@@ -1,0 +1,1 @@
+//@ /home/dev/work/projects/boiler-metaMQTT/src/main.ts

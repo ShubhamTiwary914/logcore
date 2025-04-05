@@ -1,1 +1,0 @@
- docker run -d --name mosqq-broker -p 1883:1883 -p 9001:9001 -v "$PWD/config:/mosquitto/config" -v "$PWD/data:/mosquitto/data" -v "$PWD/log:/mosquitto/log" eclipse-mosquitto

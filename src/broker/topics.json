@@ -1,0 +1,38 @@
+{
+  "boiler": {
+    "temperature": "float",
+    "pressure": "float",
+    "water_level": "float",
+    "flow_rate": "float",
+    "fuel_consumption": "float",
+    "steam_output": "float",
+    "power_consumption": "float",
+    "exhaust_gas_temperature": "float",
+    "valve_status": "string",
+    "vibration_level": "float"
+  },
+  "greenhouse": {
+    "temperature": "float",
+    "humidity": "float",
+    "soil_moisture": "float",
+    "light_intensity": "float",
+    "co2_level": "float",
+    "water_level": "float",
+    "fan_status": "string",
+    "heater_status": "string",
+    "irrigation_status": "string",
+    "wind_speed": "float"
+  },
+  "logistics": {
+    "speed": "float",
+    "engine_temperature": "float",
+    "fuel_level": "float",
+    "battery_voltage": "float",
+    "oil_pressure": "float",
+    "tire_pressure": "float",
+    "gps_location": "object",
+    "brake_status": "string",
+    "gear_position": "string",
+    "acceleration": "float"
+  }
+}

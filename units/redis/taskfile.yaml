@@ -1,0 +1,8 @@
+version: '3'
+
+tasks: 
+  install:
+    desc: Install packages in node with types
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install @types/{{.CLI_ARGS}}

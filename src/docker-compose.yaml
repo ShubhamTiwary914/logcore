@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  emqx:
+    image: emqx:5
+    container_name: emqx-broker
+    ports:
+      - 18084:18084
+      - 18083:18083
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+    environment:
+      EMQX_DASHBOARD__LISTENERS__HTTPS__BIND: 18084
+    healthcheck:
+      test: ["CMD", "emqx", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis
+    container_name: redis-test
+    restart: always
+    ports:
+      - 6379:6379
+  
+  redis-stream:
+    image: redis
+    container_name: redis-stream-test
+    restart: always
+    ports: 
+      - 6380:6379
+
+  redisinsight:
+      image: redis/redisinsight
+      container_name: redisinsight
+      ports:
+        - 5540:5540 

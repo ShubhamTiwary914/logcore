@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  rabbit-workers-run:
+    cmds:
+      - echo "test"
+  rabbit-send-messages:
+    cmds:
+      - echo "{{.CLI_ARGS}}"
+  rabbit-install-pkg:
+    desc: Install packages in node with types
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install @types/{{.CLI_ARGS}}

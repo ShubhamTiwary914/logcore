@@ -1,0 +1,12 @@
+version: '3'
+
+tasks: 
+  install:
+    desc: Install packages in node with types
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install @types/{{.CLI_ARGS}}
+  connect-db:
+    desc: Connect to the timescale db (via psql)
+    cmds: 
+      - PGPASSWORD="password" psql -h 127.0.0.1 -p 5432 -U postgres
