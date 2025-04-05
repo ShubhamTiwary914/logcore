@@ -1,6 +1,5 @@
 import * as redis from "ioredis";
 import { forever } from "async"
-import assert from "assert"
 import { config  } from "dotenv";
 
 
@@ -19,11 +18,9 @@ interface RedisStreamResponse {
 }
 
 
-config({
-    path: './.worker.env'
-});
+config()
 
-//envs
+    //envs
 const TOPICS = process.env.TOPICS;
 const STREAM_HOST = process.env.STREAM_HOST;
 const STREAM_PORT = process.env.STREAM_PORT;

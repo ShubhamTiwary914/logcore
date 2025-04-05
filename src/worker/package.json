@@ -3,11 +3,14 @@
     "async": "^3.2.6",
     "dotenv": "^16.4.7",
     "ioredis": "^5.6.0",
+    "kysely": "^0.27.6",
+    "pg": "^8.14.1",
     "redis-streams": "^1.1.0"
   },
   "devDependencies": {
     "@types/async": "^3.2.24",
     "@types/dotenv": "^6.1.1",
-    "@types/ioredis": "^4.28.10"
+    "@types/ioredis": "^4.28.10",
+    "@types/pg": "^8.11.11"
   }
 }

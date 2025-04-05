@@ -22,19 +22,28 @@ services:
   redis:
     image: redis
     container_name: redis-test
-    restart: always
+    restart: unless-stopped 
     ports:
       - 6379:6379
   
   redis-stream:
     image: redis
     container_name: redis-stream-test
-    restart: always
+    restart: unless-stopped 
     ports: 
       - 6380:6379
 
   redisinsight:
-      image: redis/redisinsight
-      container_name: redisinsight
-      ports:
-        - 5540:5540 
+    image: redis/redisinsight
+    container_name: redisinsight
+    ports:
+      - 5540:5540 
+        
+  timescaledb:
+    image: timescale/timescaledb-ha:pg17
+    container_name: timescaledb-test
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password

@@ -3,9 +3,7 @@ import  { config } from "dotenv"
 import { cacheDeviceShadow, getTimestamp, initialiseConnections, streamPush } from "./utils.js";
 import cliProgress from 'cli-progress';
 
-config({
-    path: './.broker.env'
-})
+config()
 
 
 const HOST = process.env.BROKER_HOST!;

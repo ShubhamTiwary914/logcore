@@ -37,9 +37,7 @@ exports.assertDefined = assertDefined;
 const redis = __importStar(require("ioredis"));
 const async_1 = require("async");
 const dotenv_1 = require("dotenv");
-(0, dotenv_1.config)({
-    path: './.worker.env'
-});
+(0, dotenv_1.config)();
 //envs
 const TOPICS = process.env.TOPICS;
 const STREAM_HOST = process.env.STREAM_HOST;
