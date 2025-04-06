@@ -4,7 +4,7 @@ export type topicTables = 'boiler' | 'logistics' | 'greenhouse'
 
 export interface Boiler {
     time: Date;
-    device_id: number;
+    deviceId: number;
     temperature: number | null;
     pressure: number | null;
     water_level: number | null;
@@ -19,7 +19,7 @@ export interface Boiler {
 
 export interface Greenhouse {
     time: Date;
-    device_id: number;
+    deviceId: number;
     temperature: number | null;
     humidity: number | null;
     soil_moisture: number | null;
@@ -34,7 +34,7 @@ export interface Greenhouse {
 
 export interface Logistics {
     time: Date;
-    device_id: number;
+    deviceId: number;
     speed: number | null;
     engine_temperature: number | null;
     fuel_level: number | null;

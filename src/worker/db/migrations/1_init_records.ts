@@ -5,7 +5,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema
         .createTable('boiler')
         .addColumn('time', 'timestamptz', (col) => col.notNull().defaultTo(sql`now()`))
-        .addColumn('device_id', 'integer', (col) => col.notNull())
+        .addColumn('deviceId', 'integer', (col) => col.notNull())
         .addColumn('temperature', 'real')
         .addColumn('pressure', 'real')
         .addColumn('water_level', 'real')
@@ -21,7 +21,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema
         .createTable('greenhouse')
         .addColumn('time', 'timestamptz', (col) => col.notNull().defaultTo(sql`now()`))
-        .addColumn('device_id', 'integer', (col) => col.notNull())
+        .addColumn('deviceId', 'integer', (col) => col.notNull())
         .addColumn('temperature', 'real')
         .addColumn('humidity', 'real')
         .addColumn('soil_moisture', 'real')
@@ -37,7 +37,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema
         .createTable('logistics')
         .addColumn('time', 'timestamptz', (col) => col.notNull().defaultTo(sql`now()`))
-        .addColumn('device_id', 'integer', (col) => col.notNull())
+        .addColumn('deviceId', 'integer', (col) => col.notNull())
         .addColumn('speed', 'real')
         .addColumn('engine_temperature', 'real')
         .addColumn('fuel_level', 'real')

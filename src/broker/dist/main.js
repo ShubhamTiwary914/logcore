@@ -2,9 +2,7 @@ import mqtt from "mqtt";
 import { config } from "dotenv";
 import { cacheDeviceShadow, getTimestamp, initialiseConnections, streamPush } from "./utils.js";
 import cliProgress from 'cli-progress';
-config({
-    path: './.broker.env'
-});
+config();
 const HOST = process.env.BROKER_HOST;
 const NODE_TOPICS = process.env.TOPICS;
 const REGISTRY_PORT = process.env.REGISTRY_PORT;

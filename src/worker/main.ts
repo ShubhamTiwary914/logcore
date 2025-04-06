@@ -1,7 +1,10 @@
 import * as redis from "ioredis";
 import { forever } from "async"
 import { config  } from "dotenv";
+import { insertOne } from './db/queries'
+import { topicTables } from "./db/schemas";
 
+config()
 
 interface RedisStreamField {
     [key: string]: string;
@@ -9,18 +12,17 @@ interface RedisStreamField {
 
 interface RedisStreamEntry {
     id: string;
-    fields: RedisStreamField;
+    fields: string;
 }
 
 interface RedisStreamResponse {
-    streamName: string;
+    streamName: topicTables;
     entries: RedisStreamEntry[];
 }
 
 
-config()
 
-    //envs
+//envs
 const TOPICS = process.env.TOPICS;
 const STREAM_HOST = process.env.STREAM_HOST;
 const STREAM_PORT = process.env.STREAM_PORT;
@@ -54,9 +56,10 @@ async function main(){
 
             for (const stream of parsedResponse) {
                 let topic = stream.streamName;
-                let entry = stream.entries[0].fields
+                let entry = JSON.parse(stream.entries[0].fields) 
+                entry['time'] = getCurrentTime()
                 let id = stream.entries[0].id;
-                console.log(entry) 
+                await insertOne(topic, entry)
                 await client.call("XACK", STREAM_TOPIC, GROUP, id);
             }
         }, 
@@ -65,8 +68,6 @@ async function main(){
         })
 }
 main();
-
-
 
 
 async function setup_group(){
@@ -136,7 +137,6 @@ function parseRedisStreamResponse(response: any): RedisStreamResponse[] {
                 for (let i = 0; i < fields.length; i += 2) {
                     fieldObj[fields[i]] = fields[i + 1];
                 }
-                
                 return {
                     id,
                     //"data" key from stream's entry
@@ -145,4 +145,11 @@ function parseRedisStreamResponse(response: any): RedisStreamResponse[] {
             })
         };
     });
+}
+
+/**
+ * @function returns the current timestamp (ISO format)
+ */
+function getCurrentTime(): string {
+    return new Date().toISOString();
 }

@@ -27,7 +27,7 @@ tasks:
     cmds: 
       - node ./dist/main.js
 
-  broker-test:
+  producer-test:
     desc: compile + run test, cliargs =  (topic, messages, intervals, intervalMs)
     dir: ./broker
     deps: [broker-compile]
@@ -86,3 +86,10 @@ tasks:
     deps: [worker-compile]
     cmds: 
       - node ./dist/db/migrate.js default {{.CLI_ARGS}}
+
+  db-rollback:
+    desc: rollback prior to last migrations
+    dir: worker
+    deps: [worker-compile]
+    cmds: 
+      - node ./dist/db/migrate down 

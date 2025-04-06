@@ -26,6 +26,13 @@ if(action == 'show'){
     });
 }
 
+else if(action == 'down'){
+    (async()=>{
+        await migrator.migrateDown();
+        console.log(`Migration rollbacked!`);
+    })()
+}
+
 else{
     if (!migrationId) {
         console.error('migation id is required!')
@@ -38,12 +45,12 @@ else{
 
 
 
-
 async function migrate() { 
     console.log(`migrating to ${migrationId}`)
     const { error, results } = await migrator.migrateTo(migrationId);
 
     if(error != undefined)
         console.log(`Errors: ${error}`);
-    console.log(`Migration status: ${results}`);
+    console.log(`Migration status: `);
+    console.log(results)
 }

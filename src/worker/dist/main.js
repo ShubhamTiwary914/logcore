@@ -37,6 +37,7 @@ exports.assertDefined = assertDefined;
 const redis = __importStar(require("ioredis"));
 const async_1 = require("async");
 const dotenv_1 = require("dotenv");
+const queries_1 = require("./db/queries");
 (0, dotenv_1.config)();
 //envs
 const TOPICS = process.env.TOPICS;
@@ -63,8 +64,10 @@ async function main() {
         const parsedResponse = parseRedisStreamResponse(response);
         for (const stream of parsedResponse) {
             let topic = stream.streamName;
-            let entry = stream.entries[0].fields;
+            let entry = JSON.parse(stream.entries[0].fields);
+            entry['time'] = getCurrentTime();
             let id = stream.entries[0].id;
+            await (0, queries_1.insertOne)(topic, entry);
             await client.call("XACK", STREAM_TOPIC, GROUP, id);
         }
     }, (err) => {
@@ -136,4 +139,10 @@ function parseRedisStreamResponse(response) {
             })
         };
     });
+}
+/**
+ * @function returns the current timestamp (ISO format)
+ */
+function getCurrentTime() {
+    return new Date().toISOString();
 }
