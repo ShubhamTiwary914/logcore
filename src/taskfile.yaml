@@ -61,6 +61,8 @@ tasks:
     cmds: 
       - node ./dist/main.js {{.CLI_ARGS}}
 
+  
+  #database
   db-connect:
     desc: Connect to the timescale db (via psql)
     cmds: 
@@ -71,9 +73,16 @@ tasks:
     cmds: 
       - echo ''
 
-  db-migrate:
-    desc: update DDL for TSDB (table, CAs) [migrations possible - 1_init_records | 2_make_aggregrates]
+  db-show-migrations:
+    desc: show all possible DB migrations
     dir: worker
     deps: [worker-compile]
     cmds: 
-      - node ./dist/db/migrate.js {{.CLI_ARGS}}
+      - node ./dist/db/migrate show
+
+  db-migrate:
+    desc: apply migrations for TSDB (table, CAs)  
+    dir: worker
+    deps: [worker-compile]
+    cmds: 
+      - node ./dist/db/migrate.js default {{.CLI_ARGS}}

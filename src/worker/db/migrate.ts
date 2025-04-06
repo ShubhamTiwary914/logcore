@@ -14,18 +14,36 @@ const migrator = new Migrator({
 })
 
 
-const migrationId = process.argv[2]
-if (!migrationId) {
-    console.error('migation id is required!')
-    process.exit(1)
+const action = process.argv[2]
+const migrationId = process.argv[3]
+
+
+if(action == 'show'){
+    (async()=>{
+        console.log(await migrator.getMigrations())
+    })().then(()=>{
+        process.exit(0)
+    });
 }
 
-async function migrate() {
+else{
+    if (!migrationId) {
+        console.error('migation id is required!')
+        process.exit(1)
+    }
+    migrate().then(()=>{
+        process.exit(0)  
+    })
+}
+
+
+
+
+async function migrate() { 
     console.log(`migrating to ${migrationId}`)
     const { error, results } = await migrator.migrateTo(migrationId);
 
-    console.log(`Errors(if any): ${error}`);
+    if(error != undefined)
+        console.log(`Errors: ${error}`);
     console.log(`Migration status: ${results}`);
 }
-
-migrate()

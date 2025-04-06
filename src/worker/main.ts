@@ -55,7 +55,8 @@ async function main(){
             for (const stream of parsedResponse) {
                 let topic = stream.streamName;
                 let entry = stream.entries[0].fields
-                let id = stream.entries[0].id; 
+                let id = stream.entries[0].id;
+                console.log(entry) 
                 await client.call("XACK", STREAM_TOPIC, GROUP, id);
             }
         }, 

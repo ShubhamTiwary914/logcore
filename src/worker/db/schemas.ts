@@ -1,4 +1,7 @@
 
+export type topicTables = 'boiler' | 'logistics' | 'greenhouse'
+
+
 export interface Boiler {
     time: Date;
     device_id: number;
