@@ -20,10 +20,13 @@ initialseCliProgress();
 const client = mqtt.connect(`mqtt://${HOST}/`);
 //connect & subscribe to all topics in process.env.TOPICS
 client.on('connect', () => {
+    console.log(`Connected to MQTT broker @${HOST}`);
     topics.forEach((topic) => {
         client.subscribe(topic, err => {
-            if (err)
+            if (err) {
+                console.log(`Error subscribing to topic: ${topic}`);
                 throw err;
+            }
             else
                 console.log(`subscribed to topic: ${topic}`);
         });

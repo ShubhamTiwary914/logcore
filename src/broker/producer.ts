@@ -65,7 +65,7 @@ console.log(`Received args:
 const idRange = [100, 200];
 const getRandomDeviceId = () => Math.floor(Math.random() * (idRange[1] - idRange[0] + 1)) + idRange[0];
 // when connected, start publishing
-const client = mqtt.connect("mqtt://localhost");
+const client = mqtt.connect("mqtt://192.168.5.175");
 client.on('connect', () => {
   let counter = 0;
   let totalCount = 0;
