@@ -11,11 +11,11 @@ export function connectRedis(id, port = 6379, host = 'localhost') {
             console.error("Redis connection error:", err);
             process.exit(1);
         });
-        //console.log(`connected ${id}(redis) @${host}:${port}`)
+        console.log(`connected ${id}(redis) @${host}:${port}`);
         return redisSock;
     }
     catch (err) {
-        //console.error("Failed to connect to Redis:", err);
+        console.error("Failed to connect to Redis:", err);
         process.exit(1);
     }
 }

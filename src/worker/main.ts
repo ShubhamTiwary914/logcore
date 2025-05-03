@@ -4,6 +4,13 @@ import { config  } from "dotenv";
 import { insertOne } from './db/queries'
 import { topicTables } from "./db/schemas";
 
+import cluster from "cluster";
+import Table from "cli-table";
+import readline from "readline"
+import { availableParallelism } from "os";
+
+
+
 config()
 
 interface RedisStreamField {
@@ -21,16 +28,15 @@ interface RedisStreamResponse {
 }
 
 
-
 //envs
 const TOPICS = process.env.TOPICS;
 const STREAM_HOST = process.env.STREAM_HOST;
 const STREAM_PORT = process.env.STREAM_PORT;
-const WORKER_ID = process.env.WORKER_ID;
 //how much backlogs to clear: too much--> lot of wait, too less - entries drop
 const BACKLOG_CLEAR_LIMIT = process.env.BACKLOG_LIMIT!
 const STREAM_TOPIC = process.argv[2]!;
-assertDefined(TOPICS, STREAM_HOST, STREAM_PORT, WORKER_ID, STREAM_TOPIC, BACKLOG_CLEAR_LIMIT)
+assertDefined(TOPICS, STREAM_HOST, STREAM_PORT, STREAM_TOPIC, BACKLOG_CLEAR_LIMIT)
+
 
 
 const cursor = "0";
@@ -43,8 +49,63 @@ const client = new redis.Redis({
 });
 
 
+const cpus = availableParallelism();
+var progress = Array.from({ length: 1 }, () => Array(cpus+1).fill(0));
+var totall = 0;
+var workers = 0;
+
+
+if(cluster.isPrimary){
+    setInterval(()=>{
+        readline.cursorTo(process.stdout, 0, 0);
+        readline.clearScreenDown(process.stdout);
+        var table = new Table({
+            head: [STREAM_TOPIC],
+            chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗'
+                    , 'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝'
+                    , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
+                    , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
+            },
+        );
+        progress[0][0]=totall
+        table.push(...progress)
+        console.log(`active workers: ${workers+1}\n`)
+        console.log("Writes to DB:")
+        console.log(table.toString())
+    }, 3000);
+
+    for(let i=0; i<cpus-1; i++){
+        const worker = cluster.fork()
+        worker.on('online', ()=>{ 
+            console.log(`node-cluster: worker ${workers++} started!`);
+        })
+
+        worker.on('error', (err)=>{
+            workers--;
+            throw err;
+        })
+
+        worker.on('disconnect', ()=> workers--)
+        worker.on('exit', (code, signal)=>{
+            workers--;
+        })
+
+        worker?.on('message', (msg) => {
+            if (msg.type === 'msg') {
+                const { wid } = msg;
+                updateProgress(wid)
+                totall++;
+            }
+        })
+    }
+    console.log('\n')
+}
+
+
 async function main(){
-    var consumer_name = `worker-${WORKER_ID}`;
+    let wid = cluster.worker?.id ?? 0; 
+    var consumer_name = `worker-${STREAM_TOPIC}-${wid}`;
+    console.log(`db:${consumer_name} has entered the arena!`)
     await setup_group();
     await clearBacklog(consumer_name);
     forever(
@@ -59,7 +120,14 @@ async function main(){
                 let entry = JSON.parse(stream.entries[0].fields) 
                 entry['time'] = getCurrentTime()
                 let id = stream.entries[0].id;
-                await insertOne(topic, entry)
+                await insertOne(topic, entry); 
+                if (cluster.isWorker) {
+                    process.send?.({ type: 'msg', wid});
+                }
+                else {
+                    updateProgress(wid)
+                    totall ++;
+                }
                 await client.call("XACK", STREAM_TOPIC, GROUP, id);
             }
         }, 
@@ -152,4 +220,10 @@ function parseRedisStreamResponse(response: any): RedisStreamResponse[] {
  */
 function getCurrentTime(): string {
     return new Date().toISOString();
+}
+
+
+
+function updateProgress(id: number){
+    progress[0][id+1]++;
 }

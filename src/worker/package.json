@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "async": "^3.2.6",
+    "cli-table": "^0.3.11",
     "dotenv": "^16.4.7",
     "ioredis": "^5.6.0",
     "kysely": "^0.27.6",
@@ -9,6 +10,7 @@
   },
   "devDependencies": {
     "@types/async": "^3.2.24",
+    "@types/cli-table": "^0.3.4",
     "@types/dotenv": "^6.1.1",
     "@types/ioredis": "^4.28.10",
     "@types/pg": "^8.11.11"

@@ -4,8 +4,12 @@ import { topicTables } from './schemas'
 
 /** @function insert = 1 rows at once*/
 export async function insertOne(topic: topicTables, payload: any){ 
-    let insertion = await db.insertInto(topic).values(payload).execute();
-    console.log(insertion)
+    try{
+        await db.insertInto(topic).values(payload).execute();
+    }
+    catch(err){
+        throw err;
+    }
 }
 
 
@@ -18,4 +22,5 @@ export async function insertMany(topic: topicTables, payload: [any]){
 export async function getBydeviceId(topic: topicTables,deviceId: number){
     return await db.selectFrom(topic).where('deviceId','=',deviceId).execute();
 }
+
 

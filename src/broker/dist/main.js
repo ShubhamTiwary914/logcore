@@ -17,6 +17,11 @@ assertDefined(HOST, NODE_TOPICS, REGISTRY_PORT, STREAM_PORT, REGISTRY_HOST, STRE
 initialiseConnections(parseInt(REGISTRY_PORT), parseInt(STREAM_PORT), REGISTRY_HOST, STREAM_HOST);
 const topics = NODE_TOPICS.split(',').map(topic => topic.trim());
 const progress = Array.from({ length: cpu_cores }, () => Array(4).fill(0));
+const topicsList = {
+    "boiler": 1,
+    "logistics": 2,
+    "greenhouse": 3
+};
 /** @description assumes port=1883 (default)  */
 const client = mqtt.connect(`mqtt://${HOST}/`);
 let workers = 0;
@@ -33,6 +38,7 @@ function primaryWorker() {
                     'right': '║', 'right-mid': '╢', 'middle': '│' }
             });
             table.push(...progress);
+            console.log("Messages processed by Broker consumers:");
             console.log(table.toString());
         }, 1000);
         for (let i = 0; i < cpu_cores; i++) {
@@ -92,11 +98,6 @@ export function assertDefined(...vars) {
         throw new Error(`Assertion failed: check environment variables, some are undefined`);
     }
 }
-const topicsList = {
-    "boiler": 1,
-    "logistics": 2,
-    "greenhouse": 3
-};
 //>stats & logging
 function updateProgress(topic, id) {
     const col = topicsList[topic];

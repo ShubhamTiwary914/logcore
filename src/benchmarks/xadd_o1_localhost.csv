@@ -1,0 +1,2 @@
+"test","rps","avg_latency_ms","min_latency_ms","p50_latency_ms","p95_latency_ms","p99_latency_ms","max_latency_ms"
+"XADD","107181.13","4.351","1.632","4.423","5.455","6.727","18.447"

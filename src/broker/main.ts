@@ -46,6 +46,7 @@ function primaryWorker(){
                 },
             );
             table.push(...progress)
+            console.log("Messages processed by Broker consumers:")
             console.log(table.toString())
         }, 1000);
 

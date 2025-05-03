@@ -1,0 +1,26 @@
+(base) ➜ dev benchmarks (v0.2/opts-v1) ✗ sockperf ping-pong -i o2 --tcp -m 64 -t 300                                             ~/work/projects/logcore/units/benchmarks
+sockperf: == version #3.10-32.gitf12cc1b66338 == 
+sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
+
+[ 0] IP = 10.10.10.6      PORT = 11111 # TCP
+sockperf: Warmup stage (sending a few dummy messages)...
+sockperf: Starting test...
+sockperf: Test end (interrupted by timer)
+sockperf: Test ended
+sockperf: [Total Run] RunTime=300.000 sec; Warm up time=400 msec; SentMessages=106279; ReceivedMessages=106278
+sockperf: ========= Printing statistics for Server No: 0
+sockperf: [Valid Duration] RunTime=299.352 sec; SentMessages=106226; ReceivedMessages=92879
+sockperf: ====> avg-latency=5173.527 (std-dev=53004.385, mean-ad=7558.843, median-ad=297.539, siqr=297.109, cv=10.245, std-error=173.921, 99.0% ci=[4725.534, 5621.520])
+sockperf: # dropped messages = 0; # duplicated messages = 0; # out-of-order messages = 13347
+sockperf: Summary: Latency is 5173.527 usec
+sockperf: Total 92879 observations; each percentile contains 928.79 observations
+sockperf: ---> <MAX> observation = 764162.765
+sockperf: ---> percentile 99.999 = 760116.067
+sockperf: ---> percentile 99.990 = 753761.810
+sockperf: ---> percentile 99.900 = 750874.758
+sockperf: ---> percentile 99.000 = 6022.814
+sockperf: ---> percentile 90.000 = 2227.838
+sockperf: ---> percentile 75.000 = 1520.482
+sockperf: ---> percentile 50.000 = 1089.792
+sockperf: ---> percentile 25.000 =  926.262
+sockperf: ---> <MIN> observation =  706.099

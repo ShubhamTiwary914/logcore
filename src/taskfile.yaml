@@ -28,7 +28,7 @@ tasks:
       - node ./dist/main.js
 
   producer-test:
-    desc: compile + run test, cliargs =  (topic, messages, intervals, intervalMs)
+    desc: compile + run test, cliargs =  (topic)  [params in broker/producer.js]
     dir: ./broker
     deps: [broker-compile]
     cmds:
@@ -61,12 +61,22 @@ tasks:
     cmds: 
       - node ./dist/main.js {{.CLI_ARGS}}
 
+  workers-all: 
+    desc: run all workers(for all 3 topics) in bg
+    dir: scripts
+    cmds:
+      - ./scripts/workers-all.sh
   
   #database
   db-connect:
     desc: Connect to the timescale db (via psql)
     cmds: 
-      - PGPASSWORD="password" psql -h 127.0.0.1 -p 5432 -U postgres -d logcore
+      - PGPASSWORD="password" psql -h 10.10.10.2 -p 5432 -U postgres
+
+  db-connect-logcore:
+    desc: Connect to the timescale db - logcore (via psql)
+    cmds: 
+      - PGPASSWORD="password" psql -h 10.10.10.2 -p 5432 -U postgres -d logcore
 
   db-init:
     desc: setup DB, tables & continous aggregrates
@@ -92,4 +102,16 @@ tasks:
     dir: worker
     deps: [worker-compile]
     cmds: 
-      - node ./dist/db/migrate down 
+      - node ./dist/db/migrate down
+
+  db-count-rows:
+    desc: get row count(boiler, logistics, greenhouse) in db
+    cmds: 
+      - ./scripts/count-rows.sh
+
+
+  #benchmark-tests
+  benchmark-redis:
+    desc: redis benchmark tests jelp
+    cmds:
+      - redis-benchmark -t <op> -h <host> -p <port> -n 100000 -c 50 -P 10  
