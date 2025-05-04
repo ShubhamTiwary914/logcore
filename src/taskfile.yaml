@@ -1,5 +1,8 @@
 version: '3'
 
+dotenv: ['.env']
+
+
 tasks: 
   #broker node 
   broker-install:
@@ -114,4 +117,26 @@ tasks:
   benchmark-redis:
     desc: redis benchmark tests jelp
     cmds:
-      - redis-benchmark -t <op> -h <host> -p <port> -n 100000 -c 50 -P 10  
+      - redis-benchmark -t <op> -h <host> -p <port> -n 100000 -c 50 -P 10 
+
+  load-env:
+    desc: load environment variable (.env in current dir) to shell (required for tf)
+    cmds: 
+      - set -a && source .env && set +a
+
+
+  #infra
+  tf-init:
+    deps: [load-env]
+    cmds: 
+      - terraform init 
+
+  tf-preview:
+    deps: [load-env]
+    cmds:
+      - terraform plan
+
+  tf-deploy:
+    deps: [load-env]
+    cmds:
+      - terraform apply
