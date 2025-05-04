@@ -6,3 +6,4 @@ data/
 log/
 .env
 src/state
+src/vagrant-template/.vagrant/
