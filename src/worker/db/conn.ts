@@ -19,7 +19,6 @@ pgPool = new PostgresDialect({
     })
 }) 
 
-console.log(`User: ${process.env.TSDB_USER}`)
 
 
 export default new Kysely<DatabaseSchema>({

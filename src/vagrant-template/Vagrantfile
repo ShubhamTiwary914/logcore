@@ -1,0 +1,18 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "<name>" do |node|
+    node.vm.box = "hashicorp-education/ubuntu-24-04"
+    node.vm.box_version = "0.1.0"
+    
+    node.vm.network :forwarded_port, guest: 22, host: 2048
+    node.vm.network :forwarded_port, guest: 2377, host: 2379
+    node.vm.network :forwarded_port, guest: 7946, host: 7949
+    node.vm.network :forwarded_port, guest: 7946, host: 7950, protocol: 'udp'
+    node.vm.network :forwarded_port, guest: 4789, host: 4791, protocol: 'udp'
+  
+    node.vm.network "public_network", bridge: "<interface>", ip: "10.0.0.3"
+    node.vm.hostname = "<name>"
+  end
+end

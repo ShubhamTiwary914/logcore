@@ -1,0 +1,161 @@
+version: '3'
+
+services: 
+  emqx:  #(8083 - ws, 84 - wss)
+    image: emqx:5
+    deploy:
+      replicas: 1 
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o2 == true
+        max_replicas_per_node: 1
+    ports:
+      - target: 1883   #tcp-line
+        published: 1883
+        mode: ingress
+        protocol: tcp
+      - target: 18083
+        published: 18083  #emqx-dashboard
+        mode: ingress
+    healthcheck:
+      test: ["CMD", "emqx", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  redis-registry:
+    image: redis
+    deploy:
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o2 == true
+        max_replicas_per_node: 1
+    restart: unless-stopped 
+    ports:
+      - target: 6379
+        published: 6379
+        mode: ingress 
+
+  redis-stream:
+    image: redis
+    deploy:
+      replicas: 1
+      restart_policy:
+          condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o2 == true
+    restart: unless-stopped 
+    ports: 
+      - target: 6379
+        published: 6380
+        mode: ingress
+
+  timescaledb:
+    image: timescale/timescaledb-ha:pg17
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o1 == true
+    restart: unless-stopped
+    ports:
+      - target: 5432
+        published: 5432
+        mode: ingress
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: password
+       POSTGRES_DB: logcore
+       PGDATA: /data/postgres
+    volumes:
+      - ./state/tsdb:/data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d logcore -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  #region monitoring
+  insight:
+    image: redis/redisinsight
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o1 == true
+    restart: unless-stopped
+    ports:
+      - 5540:5540 
+
+  grafana:
+    image: grafana/grafana 
+    ports:  
+      - target: 3000
+        published: 3000
+        mode: ingress
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o1 == true
+    restart: unless-stopped
+    volumes:
+      - ./monitor/graf/data:/var/lib/grafana
+      - ./monitor/graf/plugins:/var/lib/grafana/plugins
+    depends_on:
+      - prometheus
+      - timescaledb
+      - postgresql-exporter
+
+  prometheus:
+    image: prom/prometheus
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o1 == true 
+    volumes:
+      - ./monitor/prom/conf:/etc/prometheus/ 
+    ports:  
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    restart: unless-stopped
+  
+  postgresql-exporter:
+    image: prometheuscommunity/postgres-exporter 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.o1 == true 
+    ports:
+      - target: 9187
+        published: 9187
+        mode: ingress
+    environment:
+      DATA_SOURCE_NAME: "postgres://postgres:password@10.10.10.2:5432/logcore?sslmode=disable"
+    depends_on:
+      - prometheus
+      - timescaledb
+    restart: unless-stopped

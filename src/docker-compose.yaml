@@ -2,7 +2,7 @@ version: '3'
 
 services:
   emqx:
-    image: emqx:5
+    image: emqx:5 
     container_name: emqx-broker
     ports:
       - 18084:18084
@@ -35,6 +35,7 @@ services:
 
   redisinsight:
     image: redis/redisinsight
+    restart: unless-stopped
     container_name: redisinsight
     ports:
       - 5540:5540 

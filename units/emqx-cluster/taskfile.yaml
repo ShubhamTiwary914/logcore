@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:  
+  tester:
+    desc: Testing taskfile config
+    cmds:
+      - echo "test"
+  compile:
+    desc: build typescipt codes (update from previous, not rebuild)
+    cmds: 
+      - tsc --skipLibCheck 
+  run:
+    deps: [compile]
+    desc: run index file
+    dir: ./dist
+    cmds: 
+      - node ./index.js
+  install:
+    desc: Install packages in node with types
+    cmds: 
+      - npm install {{.CLI_ARGS}}
+      - npm install @types/{{.CLI_ARGS}}
